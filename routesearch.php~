@@ -1,0 +1,12 @@
+<?php
+	require 'Dijkstra.php';
+	require 'loadgraph.php';
+	$source = $_POST['source'];
+	$destination = $_POST['destination'];
+	$date = $_POST['date'];
+	echo ''.$source.' to '.$destination.'<br>';
+	$d = new Dijkstra($graph);
+	$d->findShortestPath($station_id[$source],$station_id[$destination]);
+	$result = $d->getPath();
+	print_r($result);
+?>
