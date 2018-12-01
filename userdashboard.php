@@ -4,6 +4,13 @@
 	if(isset($_SESSION['username'])){
 		$name = '<h3 style="color: white;font-weight: bold;">'.$_SESSION['username'].'<h3><form method="post" action="logout.php" ><input type="submit" value="Logout" style="padding: 5px;font-size: 16px;"></input></form>';
 	}else $name = '<a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a>';
+	if(isset($_POST["booking_history"])){
+		header('Location: BookingHistory.php');
+	}else if(isset($_POST["cacel_ticket"])){
+		header('Location: CancelTicket.php');
+	}else if(isset($_POST["pnr_status"])){
+		header('Location: PNRStatus.php');
+	} 
 ?>
 
 <html>

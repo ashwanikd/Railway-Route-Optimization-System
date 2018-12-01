@@ -1,51 +1,33 @@
 <?php
+session_start();
+	if(isset($_SESSION['adminusername'])){
+		$name = '<h3 style="color: white;font-weight: bold;">'.$_SESSION['adminusername'].'<h3><form method="post" action="logout.php" ><input type="submit" value="Logout" style="padding: 5px;font-size: 16px;"></input></form>';
+	}else $name = '<a href="../login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a>';
 	$con = mysqli_connect('127.0.0.1','root','','RAILWAY_CORPORATION');
 	if(mysqli_connect_errno()) {
 		die('could not connect to database');		
 	}
-    $uname = $_POST['username'];
-    $password = $_POST['password'];
-    $dob = $_POST['dob'];
-    $name = $_POST['name'];
-    $mobile = $_POST['mobile'];
-    $address = $_POST['address'];
-    $message = "";
-        $password = md5($password);
-        $q = "INSERT INTO user VALUES('$uname','$password','$name','$dob','$mobile','$address')";
-        if(mysqli_query($con,$q)){
-			if(mkdir('users/'.$uname)){
-				$file = fopen('users/'."$uname/BookingHistory.xml","w");
-				fwrite($file,"<?XML encoding=\"utf-8\" version=\"1.0\"?>
-								<Booking>
-								</Booking>
-							</XML>");
-				fclose($file);
-				$file = fopen('users/'."$uname/CancelHistory.xml","w");
-				fwrite($file,"<?XML encoding=\"utf-8\" version=\"1.0\"?>
-								<Booking>
-								</Booking>
-							</XML>");
-				fclose($file);
-				$message = "Successfully Registered.";
-			}
-        }else $message = "Username Already Taken.<br><a href=registerpassenger.php>Register page</a>";
-    
+    $q = "SELECT MAX(route_id) FROM route;";
+    $res = mysqli_query($con,$q);
+    $row = mysqli_fetch_assoc($res);
+    $max = $row['MAX(route_id)'];
 ?>
+
 <html>
 	<head>
-		<link rel="stylesheet" href="homepage.css"/>
-		<link rel="stylesheet" href="css/bootstrap.min.css"/>
-		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="../homepage.css"/>
+		<link rel="stylesheet" href="../css/bootstrap.min.css"/>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
 	</head>
 	<body>
 		<div class="navbar" id="upper" style="border-radius: 3px;">
-			<div class="navbar-brand"><a href="index.php"><img class="rounded-circle" src="images/logo.png" alt="railway logo" style="height: 12%;"></a></div>
+			<div class="navbar-brand"><a href="admindashboard.php"><img class="rounded-circle" src="../images/logo.png" alt="railway logo" style="height: 12%;"></a></div>
 			<div class="navbar-brand"><h1 class="display-5" style="color: white;font-weight: bold;font-style: italic;text-decoration: underline;">INDIAN RAILWAY CORPORATION<h1></div>
-			<div class="navbar-brand"><a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a></div>		
+			<div class="navbar-brand"><?php echo $name;?></div>		
 		</div>
 		<div class="row" style="margin-left: 2px;">
 			<div class="col-3" id="form_division">
-				<form method="post" class="form" action="routesearch.php">
+				<form method="post" class="form" action="../routesearch.php">
 						<p style="color: white;font-size: 23px;">From:<br><input list="stations" id="liststyle" name="source" style="color: gray; width: 100%;padding: 3px 15px;margin: 10px 5px;display: inline-block;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;"><datalist id="stations">
     																						<option value="agartala">
 																							<option value="aizawl">
@@ -81,9 +63,35 @@
 						</p>
 				</form>		
 			</div>
-			<div class="col-9" style="align-content: center;text-align: center;">
-				<br><br><br><br><h1 style="color: white;font-weight: bold;"><?php
-                                                                                echo $message; ?></h1>
+			<div class="col-9" id="form_division" >
+                <h3 style="color: white;font-weight: bold;">Add Connection<h3>
+                <hr style="border-color: white;border-width: 3px;">
+				<Form class="form" action="" method="post">
+					<label style="color: white;">Route_ID</label>
+                    <input type="text" value="<?php echo ($max+1).",".($max+2); ?>" disabled />
+                    <label style="color: white;">Enter Route</label>
+                    <input type="text" name="route" />
+                    <input type="submit" value="Submit">
+                </Form>
+                <?php
+                    if(isset($_POST['route'])){
+                        $route = explode('->',$_POST['route']);
+                        $f = $max+1;
+                        $r = $max+2;
+                        for($i=0;$i<count($route);$i++){
+                            $query = "INSERT INTO route VALUES ($f,'".$route[$i]."',$i)";
+                            mysqli_query($con,$query);
+                        }
+                        for($i=count($route)-1;$i>=0;$i--){
+                            $query = "INSERT INTO route VALUES ($r,'".$route[$i]."',".(count($route)-1-$i).")";
+                            mysqli_query($con,$query);
+                        }
+                        echo "<div class=\"alert alert-success\">
+                                        Route Succesfully Added...
+                                  </div>";
+                        header("Location: addroute.php");
+                    }
+                ?>
 			</div>
 		</div>
 	</body>

@@ -1,21 +1,29 @@
 <?php
+session_start();
+	if(isset($_SESSION['adminusername'])){
+		$name = '<h3 style="color: white;font-weight: bold;">'.$_SESSION['adminusername'].'<h3><form method="post" action="logout.php" ><input type="submit" value="Logout" style="padding: 5px;font-size: 16px;"></input></form>';
+	}else $name = '<a href="../login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a>';
+	$con = mysqli_connect('127.0.0.1','root','','RAILWAY_CORPORATION');
+	if(mysqli_connect_errno()) {
+		die('could not connect to database');		
+	}
 ?>
 
 <html>
 	<head>
-		<link rel="stylesheet" href="homepage.css"/>
-		<link rel="stylesheet" href="css/bootstrap.min.css"/>
-		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="../homepage.css"/>
+		<link rel="stylesheet" href="../css/bootstrap.min.css"/>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
 	</head>
 	<body>
 		<div class="navbar" id="upper" style="border-radius: 3px;">
-			<div class="navbar-brand"><a href="index.php"><img class="rounded-circle" src="images/logo.png" alt="railway logo" style="height: 12%;"></a></div>
+			<div class="navbar-brand"><a href="admindashboard.php"><img class="rounded-circle" src="../images/logo.png" alt="railway logo" style="height: 12%;"></a></div>
 			<div class="navbar-brand"><h1 class="display-5" style="color: white;font-weight: bold;font-style: italic;text-decoration: underline;">INDIAN RAILWAY CORPORATION<h1></div>
-			<div class="navbar-brand"><a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a></div>		
+			<div class="navbar-brand"><?php echo $name;?></div>		
 		</div>
 		<div class="row" style="margin-left: 2px;">
 			<div class="col-3" id="form_division">
-				<form method="post" class="form" action="routesearch.php">
+				<form method="post" class="form" action="../routesearch.php">
 						<p style="color: white;font-size: 23px;">From:<br><input list="stations" id="liststyle" name="source" style="color: gray; width: 100%;padding: 3px 15px;margin: 10px 5px;display: inline-block;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;"><datalist id="stations">
     																						<option value="agartala">
 																							<option value="aizawl">
@@ -51,10 +59,29 @@
 						</p>
 				</form>		
 			</div>
-			<div class="col-9" style="align-content: center;text-align: center;">
-				<br><br><br><br><h1 style="color: white;font-weight: bold;">INDIAN RAILWAYS</h1><br><h4 style="color: white;font-weight: bold;">Saftey|Security|Punctuality</h4>
+			<div class="col-9" id="form_division" >
+                <h3 style="color: white;font-weight: bold;">Add Station<h3>
+                <hr style="border-color: white;border-width: 3px;">
+				<Form class="form" action="" method="post">
+					<label style="color: white;">Station Name</label>
+                    <input type="text" name="name">
+                    <label style="color: white;">Station ID</label>
+                    <input type="text" name="id">
+                    <label style="color: white;">State</label>
+                    <input type="text" name="state">
+                    <input type="submit" value="Submit">
+                </Form>
+                <?php
+                    if(isset($_POST['name']) && isset($_POST['id']) && isset($_POST['state'])){
+                        $query = "INSERT INTO stations VALUES ('".$_POST['id']."','".$_POST['name']."','".$_POST['state']."');";
+                        if(mysqli_query($con,$query)){
+                            echo "<div class=\"alert alert-success\">
+                                        Station Succesfully Added...
+                                  </div>";
+                        }
+                    }
+                ?>
 			</div>
 		</div>
-		<?php include('footer.php'); ?>
 	</body>
 </html>

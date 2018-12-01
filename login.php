@@ -1,4 +1,5 @@
 <?php
+session_start();
 	if(isset($_SESSION['username'])){
 		$name = '<h3 style="color: white;font-weight: bold;">'.$_SESSION['username'].'<h3><form method="post" action="logout.php" ><input type="submit" value="Logout" style="padding: 5px;font-size: 16px;"></input></form>';
 	}else $name = '<a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a>';
@@ -56,7 +57,8 @@
 			</div>
 			<div class="col-9" id="form_division" >
 				<br><br>
-					<center><div id="form_division" style=" width: 50%;">
+				<center>
+					<div id="form_division" style=" width: 50%;">
 						<form method="post" class="form" action="createsession.php" style="text-align: left;">
 							<p style="color: white;font-size: 23px;">Username:<br><input type="text" name="username" style="color: gray;"/><br>
 							Password:<br><input type="password" name="password" style="color: gray;"/><br>
@@ -70,8 +72,10 @@
 								}
 							?>
 							</p>
-				</form>
-			</div></center>
+						</form>
+					</div>
+				</center>
+			</div>
 		</div>
 	</body>
 </html>

@@ -125,7 +125,9 @@
 		session_start();
 		$_SESSION['trains_found'] = false;
 		$_SESSION['message'] = "no trains between these stations";
-		header("Location: routesearchresult.php");
+		$_SESSION['source'] = $src;
+		$_SESSION['destination'] = $des;
+		header("Location: routesearchresult1.php");
 	}
 	//get all the trains on the founded routes
 	$query = "SELECT * FROM trains WHERE route = '$route[0]' ";
@@ -428,7 +430,9 @@
 		session_start();
 		$_SESSION['trains_found'] = false;
 		$_SESSION['message'] = "no trains run on this day";
-		header("Location: routesearchresult.php");
+		$_SESSION['source'] = $src;
+		$_SESSION['destination'] = $des;
+		header("Location: routesearchresult1.php");
 	}
 	else{
 		print_r($result);

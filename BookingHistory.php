@@ -1,4 +1,11 @@
 <?php
+    session_start();
+    $xml = simplexml_load_file('users/'.$_SESSION['username'].'/BookingHistory.xml');
+?>
+<?php
+	if(isset($_SESSION['username'])){
+		$name = '<h3 style="color: white;font-weight: bold;">'.$_SESSION['username'].'<h3><form method="post" action="logout.php" ><input type="submit" value="Logout" style="padding: 5px;font-size: 16px;"></input></form>';
+	}else $name = '<a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a>';
 ?>
 
 <html>
@@ -11,7 +18,7 @@
 		<div class="navbar" id="upper" style="border-radius: 3px;">
 			<div class="navbar-brand"><a href="index.php"><img class="rounded-circle" src="images/logo.png" alt="railway logo" style="height: 12%;"></a></div>
 			<div class="navbar-brand"><h1 class="display-5" style="color: white;font-weight: bold;font-style: italic;text-decoration: underline;">INDIAN RAILWAY CORPORATION<h1></div>
-			<div class="navbar-brand"><a href="login.php"><h3 class="display-5" style="color: white;font-weight: bold;text-decoration: underline;">USER LOGIN<h3></a></div>		
+			<div class="navbar-brand"><?php echo $name;?></div>		
 		</div>
 		<div class="row" style="margin-left: 2px;">
 			<div class="col-3" id="form_division">
@@ -51,10 +58,50 @@
 						</p>
 				</form>		
 			</div>
-			<div class="col-9" style="align-content: center;text-align: center;">
-				<br><br><br><br><h1 style="color: white;font-weight: bold;">INDIAN RAILWAYS</h1><br><h4 style="color: white;font-weight: bold;">Saftey|Security|Punctuality</h4>
-			</div>
+			<div class="col-9" id="form_division" >
+                <?php
+                    echo "<table class=\"table\">";
+                    echo "<tr class=\"active\" style=\"background: gray;\">";
+                    echo "<th>PNR</th>";
+                    echo "<th>Date</th>";
+                    echo "<th>Train_No</th>";
+                    echo "<th>Departs</th>";
+                    echo "<th>Arrives</th>";
+                    echo "<th>Duration</th>";
+                    echo "<th>Class</th>";
+                    echo "<th>Seat_no</th>";
+                    echo "<th>status</th>";
+                    echo "</tr>";
+                    $a = $xml->ticket;
+                    foreach($a as $ticket){
+                        echo "<tr class=\"success\" style=\"background: rgb(204, 204, 255);\">";
+                        echo "<td>".$ticket->pnr."</td>";
+                        echo "<td>".$ticket->date."</td>";
+                        echo "<td>".$ticket->train_id."</td>";
+                        $d = $ticket->departure;
+                        $h = floor($d/3600);
+                        $m = floor(($d-($h*3600))/60);
+                        echo "<td>".$h.":".$m."</td>";
+                        $d = $ticket->arrival;
+                        $h = floor($d/3600);
+                        $m = floor(($d-($h*3600))/60);
+                        echo "<td>".$h.":".$m."</td>";
+                        $d = $ticket->duration;
+                        $h = floor($d/3600);
+                        $m = floor(($d-($h*3600))/60);
+                        echo "<td>".$h.":".$m."</td>";
+                        echo "<td>".$ticket->class."</td>";
+                        echo "<td>".$ticket->seat_no."</td>";
+                        echo "<td>".$ticket->status."</td>";
+                        echo "</tr>";                                   
+                    }
+                    echo "</table>";
+                    echo "</table>
+                            <form action=\"userdashboard.php\" method=\"post\">
+                            <input type=\"submit\" class=\"btn\" value=\"Back\" />
+                            </form>";
+                ?>
+			</div>	
 		</div>
-		<?php include('footer.php'); ?>
 	</body>
 </html>
