@@ -32,7 +32,7 @@
     for($i=0;$i<$result['no_of_passengers'];$i++){
         $pnr[$i] = 0;
     }
-    
+    $day_no++;
     //updating tables
     $query = "SELECT ".$result['class']." FROM Availability WHERE source=".$result['src_order']." AND destination=".$result['des_order']." AND day_no=".$day_no." AND time=".$result['src_time'].";";
     $res = mysqli_query($con,$query);
